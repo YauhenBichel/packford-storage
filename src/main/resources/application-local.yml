@@ -1,0 +1,29 @@
+datasource:
+  driver-class-name: 'org.postgresql.Driver'
+  schema: 'public'
+  url: 'jdbc:postgresql://localhost:5433/storage'
+  username: 'postgres'
+  password: 'password'
+
+# The SQL dialect makes Hibernate generate better SQL for the chosen database
+spring:
+  datasource:
+    name: 'TwoayMoleCarePostgreSQL'
+    driverClassName: '${datasource.driver-class-name}'
+    url: '${datasource.url}'
+    username: '${datasource.username}'
+    password: '${datasource.password}'
+
+  liquibase:
+    change-log: 'classpath:db/changelog/db.changelog-master.yaml'
+    enabled: false
+    url: '${datasource.url}'
+    user: '${datasource.username}'
+    password: '${datasource.password}'
+    parameters:
+      env: '${spring.profiles.active}'
+
+  security:
+    user:
+      name: yb3129h@gre.ac.uk
+      password: 19973858@7837~43b2!bd7a%2f4504f2ea0e

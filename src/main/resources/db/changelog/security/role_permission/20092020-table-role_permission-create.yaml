@@ -1,0 +1,40 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 20092020-table-role_permission-create
+    author: bichel.eugen@gmail.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+              - tableExists:
+                    tableName: role_permission
+    changes:
+        - createTable:
+            columns:
+                - column:
+                    name: role_id
+                    constraints:
+                        nullable: false
+                    remarks: role id
+                    type: UUID
+                - column:
+                      name: permission_id
+                      constraints:
+                          nullable: false
+                      remarks: permission id
+                      type: UUID
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: created
+                    remarks: Record created
+                    type: datetime
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: modified
+                    remarks: Record modified
+                    type: datetime
+            tableName: role_permission

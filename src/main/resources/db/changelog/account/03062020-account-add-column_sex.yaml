@@ -1,0 +1,21 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 03062020-account-add-column_sex
+    author: bichel.eugen@gmail.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                columnName: sex
+                tableName: account
+    changes:
+        - addColumn:
+              columns:
+                  - column:
+                        name: sex
+                        type: twoay_sex
+                        defaultValue: 'OTHER'
+                        constraints:
+                            nullable: false
+              tableName: account

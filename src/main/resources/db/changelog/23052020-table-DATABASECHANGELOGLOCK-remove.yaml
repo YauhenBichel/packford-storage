@@ -1,0 +1,8 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 23052020-table-DATABASECHANGELOGLOCK-remove
+    author: bichel.eugen@gmail.com
+    changes:
+        dbms: postgresql
+        sql: DROP TABLE DATABASECHANGELOGLOCK;

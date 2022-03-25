@@ -1,0 +1,41 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 17062020-table-scheduled_task-create
+    author: bichel.eugen@gmail.com
+    changes:
+        - createTable:
+            columns:
+                - column:
+                    name: id
+                    constraints:
+                        nullable: false
+                        primaryKey: true
+                    type: UUID
+                - column:
+                      name: taskName
+                      constraints:
+                          nullable: false
+                      remarks: scheduled task name
+                      type: clob
+                - column:
+                      name: nextDateTime
+                      remarks: Next scheduled date time
+                      type: datetime
+                      constraints:
+                          nullable: false
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: created
+                    remarks: Record created
+                    type: datetime
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: modified
+                    remarks: Record modified
+                    type: datetime
+            tableName: scheduled_task

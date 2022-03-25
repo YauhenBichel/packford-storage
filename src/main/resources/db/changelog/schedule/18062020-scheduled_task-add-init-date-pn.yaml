@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - logicalFilePath: no-path
+  - changeSet:
+      id: 18062020-scheduled_task-add-init-date-pn.yaml
+      author: bichel.eugen@gmail.com
+      changes:
+        dbms: postgresql
+        sqlFile:
+          path: sql/scheduled_task_push_notifi_task.sql
+          stripComments: true
+          relativeToChangelogFile: true

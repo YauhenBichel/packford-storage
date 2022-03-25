@@ -1,0 +1,65 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 28032020-table-account-create
+    author: bichel.eugen@gmail.com
+    changes:
+        - createTable:
+            columns:
+                - column:
+                    constraints:
+                        nullable: false
+                        primaryKey: true
+                    name: id
+                    type: UUID
+                - column:
+                    constraints:
+                        nullable: false
+                    name: first_name
+                    remarks: First Name
+                    type: clob
+                - column:
+                    name: last_name
+                    remarks: Last Name
+                    type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: email
+                    remarks: Email
+                    type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: password
+                    remarks: Password
+                    type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: verificated
+                    defaultValueBoolean: false
+                    remarks: veridicated by email
+                    type: BOOLEAN
+                - column:
+                      constraints:
+                          nullable: false
+                      name: active
+                      defaultValueBoolean: true
+                      remarks: active
+                      type: BOOLEAN
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: created
+                    remarks: Record created
+                    type: datetime
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: modified
+                    remarks: Record modified
+                    type: datetime
+            tableName: account

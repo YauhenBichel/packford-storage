@@ -1,0 +1,10 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 17062020-scheduled_task-add-unique-constraint
+    author: bichel.eugen@gmail.com
+    changes:
+        - addUniqueConstraint:
+              columnNames: taskName
+              constraintName: idx_scheduled_task_taskName
+              tableName: scheduled_task

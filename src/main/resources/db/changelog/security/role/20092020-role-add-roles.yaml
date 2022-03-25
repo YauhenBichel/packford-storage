@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - logicalFilePath: no-path
+  - changeSet:
+      id: 20092020-role-add-roles
+      author: bichel.eugen@gmail.com
+      changes:
+        dbms: postgresql
+        sqlFile:
+          path: sql/role_add_roles.sql
+          stripComments: true
+          relativeToChangelogFile: true

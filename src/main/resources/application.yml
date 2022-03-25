@@ -1,0 +1,48 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  profiles:
+    active: local
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+        format_sql: true
+        type: trace
+        # Hibernate ddl auto (create, create-drop, validate, update)
+        # This is supposed to maintain the schema to follow any changes
+        # you make to the Model each time you run the app
+        ddl-auto: none
+        generate_statistics: false
+        jdbc:
+          batch_size: 100
+        # To batch all insert statements of the same entity type
+        order_inserts: true
+        # Similar to batch inserts, we can group several update statements and
+        # send them to the database in one go.
+        order_updates: true
+        batch_versioned_data: true
+        #cache:
+        #  use_query_cache: true
+  servlet:
+    multipart:
+      max-file-size: 3MB #file size limit
+      max-request-size: 20MB #total request size for a multipart/form-data
+
+logging:
+  level:
+    org:
+      springframework:
+        transaction:
+          interceptor: TRACE
+
+jwt:
+  secret: ybichel-storage-@2000!
+
+springdoc:
+  api-docs:
+    path: /api-docs
+

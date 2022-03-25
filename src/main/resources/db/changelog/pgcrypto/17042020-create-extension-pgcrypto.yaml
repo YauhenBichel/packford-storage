@@ -1,0 +1,14 @@
+databaseChangeLog:
+    - logicalFilePath: no-path
+    - changeSet:
+        id: 170420202.create-extension-pgcrypto.yaml
+        author: bichel.eugen@gmail.com
+        changes:
+          dbms: postgresql
+          preConditions:
+            onFail: MARK_RAN
+            sqlCheck:
+              expectedResult: 0
+              sql: "SELECT COUNT(*) FROM pg_extension
+                    where extname = 'pgcrypto'"
+          sql: CREATE EXTENSION IF NOT EXISTS pgcrypto;

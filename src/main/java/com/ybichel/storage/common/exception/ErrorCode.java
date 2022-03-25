@@ -1,0 +1,11 @@
+package com.ybichel.storage.common.exception;
+
+public enum ErrorCode {
+    JWT_TOKEN_EXPIRED,
+    ACCOUNT_NOT_VERIFICATED,
+    ACCOUNT_DUPLICATE,
+    ACCOUNT_NOT_FOUND,
+    ACCOUNT_NOT_ACTIVE,
+    RESET_PASSWORD_TOKEN_NOT_FOUND,
+    RESET_PASSWORD_TOKEN_EXPIRED
+}

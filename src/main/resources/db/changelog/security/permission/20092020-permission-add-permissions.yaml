@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - logicalFilePath: no-path
+  - changeSet:
+      id: 20092020-permission-add-permissions
+      author: bichel.eugen@gmail.com
+      changes:
+        dbms: postgresql
+        sqlFile:
+          path: sql/permission_add_permissions.sql
+          stripComments: true
+          relativeToChangelogFile: true

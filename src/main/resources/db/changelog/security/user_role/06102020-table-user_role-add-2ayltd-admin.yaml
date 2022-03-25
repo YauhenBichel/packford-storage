@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - logicalFilePath: no-path
+  - changeSet:
+      id: 06102020-table-user_role-add-2ayltd-admin
+      author: bichel.eugen@gmail.com
+      changes:
+        dbms: postgresql
+        sqlFile:
+          path: sql/user_role_add_2ayltd-admin.sql
+          stripComments: true
+          relativeToChangelogFile: true

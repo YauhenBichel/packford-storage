@@ -1,0 +1,20 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 23062020-notification-remove-unique-constraint-email.yaml
+    author: bichel.eugen@gmail.com
+    changes:
+      - dropNotNullConstraint:
+          columnDataType: clob
+          columnName: email
+          schemaName: public
+          tableName: account
+- changeSet:
+    id: 23062020-notification-remove-unique-constraint-password.yaml
+    author: bichel.eugen@gmail.com
+    changes:
+      - dropNotNullConstraint:
+          columnDataType: clob
+          columnName: password
+          schemaName: public
+          tableName: account

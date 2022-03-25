@@ -1,0 +1,47 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 14042020-table-verification_token-create
+    author: bichel.eugen@gmail.com
+    changes:
+        - createTable:
+            columns:
+                - column:
+                    name: id
+                    constraints:
+                        nullable: false
+                        primaryKey: true
+                    type: UUID
+                - column:
+                      name: account_id
+                      constraints:
+                          nullable: false
+                      remarks: account id
+                      type: UUID
+                - column:
+                    constraints:
+                        nullable: false
+                    name: token
+                    remarks: verification token
+                    type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: expiry_date
+                    remarks: expiry date
+                    type: date
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: created
+                    remarks: Record created
+                    type: datetime
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: modified
+                    remarks: Record modified
+                    type: datetime
+            tableName: verification_token

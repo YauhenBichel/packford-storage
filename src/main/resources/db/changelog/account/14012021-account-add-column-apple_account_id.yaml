@@ -1,0 +1,20 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 07102020-account-add-column-apple_account_id
+    author: bichel.eugen@gmail.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                columnName: apple_account_id
+                tableName: account
+    changes:
+        - addColumn:
+              columns:
+                  - column:
+                        name: apple_account_id
+                        type: UUID
+                        constraints:
+                            nullable: true
+              tableName: account

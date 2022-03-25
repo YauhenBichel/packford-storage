@@ -1,0 +1,92 @@
+//Spring version is 5.2.4.RELEASE
+plugins {
+	id 'org.springframework.boot' version '2.2.5.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+	id 'org.asciidoctor.convert' version '1.5.8'
+	id 'java'
+	id 'jacoco'
+	id "org.sonarqube" version "2.7"
+	id "com.palantir.docker" version "0.25.0"
+}
+
+//necessary to use api() operation
+apply plugin: 'java-library'
+
+group = 'com.ybichel.storage'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+bootJar {
+	baseName = 'ybichel-storage'
+	version =  '0.0.1-SNAPSHOT'
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('snippetsDir', file("build/generated-snippets"))
+}
+
+dependencies {
+	implementation 'org.liquibase:liquibase-core'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'com.google.firebase:firebase-admin:6.13.0'
+	implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.4'
+
+	api('io.jsonwebtoken:jjwt:0.9.1')
+	runtimeOnly 'org.postgresql:postgresql'
+	implementation group: 'com.icegreen', name: 'greenmail-spring', version: '1.4.1'
+	implementation group: 'com.google.gcm', name: 'gcm-server', version: '1.0.0'
+	implementation 'com.amazonaws:aws-java-sdk:1.9.6'
+	compileOnly 'org.projectlombok:lombok:1.18.20'
+	annotationProcessor 'org.projectlombok:lombok:1.18.20'
+	implementation group: 'com.auth0', name: 'java-jwt', version: '3.10.3'
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+	implementation 'org.modelmapper:modelmapper:2.3.8'
+
+	implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+	implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.14.1'
+
+	testCompileOnly 'org.projectlombok:lombok:1.18.20'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.20'
+
+	implementation group: 'cz.jirutka.rsql', name: 'rsql-parser', version: '2.1.0'
+	implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '3.0.0'
+	implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-oauth2-client', version: '2.4.0'
+
+	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
+	implementation group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13.2'
+
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'org.springframework.security:spring-security-test'
+
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+	testImplementation group: 'org.hamcrest', name: 'hamcrest', version: '2.2'
+}
+
+test {
+	useJUnitPlatform()
+}
+
+asciidoctor {
+	inputs.dir snippetsDir
+	dependsOn test
+}
+task unpack(type: Copy) {
+	dependsOn bootJar
+	from(zipTree(tasks.bootJar.outputs.files.singleFile))
+	into("build/dependency")
+}
+docker {
+	name "${project.group}/${bootJar.baseName}"
+	copySpec.from(tasks.unpack.outputs).into("dependency")
+	buildArgs(['DEPENDENCY': "dependency"])
+}

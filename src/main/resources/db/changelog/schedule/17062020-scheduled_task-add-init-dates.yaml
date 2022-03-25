@@ -1,0 +1,16 @@
+databaseChangeLog:
+  - logicalFilePath: no-path
+  - changeSet:
+      id: 17062020-scheduled_task-add-init-dates.yaml
+      author: bichel.eugen@gmail.com
+      changes:
+        dbms: postgresql
+        preConditions:
+          onFail: MARK_RAN
+          sqlCheck:
+            expectedResult: 0
+            sql: "SELECT COUNT(*) FROM scheduled_task"
+        sqlFile:
+          path: sql/scheduled_task_init_tasks.sql
+          stripComments: true
+          relativeToChangelogFile: true

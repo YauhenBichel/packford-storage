@@ -1,0 +1,20 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 07102020-account-add-column-body_appreciation_id
+    author: bichel.eugen@gmail.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+            - columnExists:
+                columnName: body_appreciation_id
+                tableName: account
+    changes:
+        - addColumn:
+              columns:
+                  - column:
+                        name: body_appreciation_id
+                        type: UUID
+                        constraints:
+                            nullable: true
+              tableName: account

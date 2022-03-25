@@ -1,0 +1,16 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+      id: 14012021-copy_to_email_account.yaml
+      author: bichel.eugen@gmail.com
+      changes:
+          dbms: postgresql
+          preConditions:
+              onFail: MARK_RAN
+              sqlCheck:
+                  expectedResult: 0
+                  sql: "SELECT COUNT(*) FROM email_account"
+          sqlFile:
+              path: sql/copy_to_email_account.sql
+              stripComments: true
+              relativeToChangelogFile: true

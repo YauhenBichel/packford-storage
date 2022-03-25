@@ -1,0 +1,40 @@
+databaseChangeLog:
+- logicalFilePath: no-path
+- changeSet:
+    id: 20092020-table-role-create
+    author: bichel.eugen@gmail.com
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+              - tableExists:
+                    tableName: role
+    changes:
+        - createTable:
+            columns:
+                - column:
+                    name: id
+                    constraints:
+                        nullable: false
+                        primaryKey: true
+                    type: UUID
+                - column:
+                      name: name
+                      constraints:
+                          nullable: false
+                      remarks: permission name
+                      type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: created
+                    remarks: Record created
+                    type: datetime
+                - column:
+                    constraints:
+                        nullable: false
+                    defaultValueComputed: CURRENT_TIMESTAMP
+                    name: modified
+                    remarks: Record modified
+                    type: datetime
+            tableName: role
