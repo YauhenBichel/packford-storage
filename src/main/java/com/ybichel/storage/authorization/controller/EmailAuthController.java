@@ -31,6 +31,9 @@ import javax.validation.Valid;
 import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Email Authentication Controller
+ */
 @RestController
 @RequestMapping({"/auth"})
 public class EmailAuthController {
@@ -39,6 +42,12 @@ public class EmailAuthController {
     private final AuthMapper authMapper;
     private final AuthenticatedAccountMapper authenticatedAccountMapper;
 
+    /**
+     * Initialize dependencies
+     * @param emailAuthService provides service for process requests for authentication
+     * @param authMapper maps account entity to response
+     * @param authenticatedAccountMapper maps entity to AuthenticationAccount model
+     */
     public EmailAuthController(IEmailAuthService emailAuthService,
                                AuthMapper authMapper,
                                AuthenticatedAccountMapper authenticatedAccountMapper) {
@@ -47,6 +56,11 @@ public class EmailAuthController {
         this.authenticatedAccountMapper = authenticatedAccountMapper;
     }
 
+    /**
+     * Register endpoint
+     * @param request RegistrationRequestVO request
+     * @return RegistrationResponseVO response
+     */
     @PostMapping("/register")
     @CrossOrigin(origins = "*")
     public ResponseEntity<RegistrationResponseVO> register(@Valid @RequestBody RegistrationRequestVO request) {
@@ -59,14 +73,15 @@ public class EmailAuthController {
     }
 
     /**
+     * Verify-email endpoint
      * Sends email message with a link to confirm a user email address
-     * @param id
-     * @return
+     * @param accountId
+     * @return ResponseEntity
      */
     @GetMapping("/verify-email/{id}")
     @CrossOrigin(origins = "*")
-    public ResponseEntity verifyEmail(@PathVariable("id") final UUID id) {
-        final Optional<Account> optDbAccount = emailAuthService.verifyEmail(id);
+    public ResponseEntity verifyEmail(@PathVariable("id") final UUID accountId) {
+        final Optional<Account> optDbAccount = emailAuthService.verifyEmail(accountId);
 
         if (optDbAccount.isEmpty()) {
             return new ResponseEntity(null, HttpStatus.NOT_FOUND);
@@ -75,6 +90,11 @@ public class EmailAuthController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
+    /**
+     * Login endpoint
+     * @param loginRequestVO requests
+     * @return LoginResponseVO response
+     */
     @PostMapping("/login")
     @CrossOrigin(origins = "*")
     public ResponseEntity<LoginResponseVO> login(@Valid @RequestBody LoginRequestVO loginRequestVO) {
@@ -85,6 +105,11 @@ public class EmailAuthController {
         return new ResponseEntity<>(responseVO, HttpStatus.OK);
     }
 
+    /**
+     * registration-confirm endpont
+     * @param token String
+     * @return ConfirmRegistrationResponseVO response
+     */
     @GetMapping("/registration-confirm")
     @CrossOrigin(origins = "*")
     public ResponseEntity<ConfirmRegistrationResponseVO> confirmRegistration(@Valid @RequestParam("token") String token) {
@@ -105,6 +130,11 @@ public class EmailAuthController {
         return new ResponseEntity<>(responseVO, HttpStatus.OK);
     }
 
+    /**
+     * reset-password-email endpoint
+     * @param requestVO EmailResetPasswordRequestVO request
+     * @return EmailResetPasswordResponseVO response
+     */
     @PostMapping("/reset-password-email")
     @CrossOrigin(origins = "*")
     public ResponseEntity<EmailResetPasswordResponseVO> resetPasswordEmail(@Valid @RequestBody EmailResetPasswordRequestVO requestVO) {
@@ -112,6 +142,11 @@ public class EmailAuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    /**
+     * reset-password endpoint
+     * @param requestVO request
+     * @return ResetPasswordResponseVO response
+     */
     @PostMapping("/reset-password")
     @CrossOrigin(origins = "*")
     public ResponseEntity<ResetPasswordResponseVO> resetPassword(@Valid @RequestBody ResetPasswordRequestVO requestVO) {

@@ -18,11 +18,17 @@ databaseChangeLog:
                         primaryKey: true
                     type: UUID
                 - column:
-                      constraints:
-                          nullable: false
-                      name: email
-                      remarks: email
-                      type: clob
+                    name: account_id
+                    constraints:
+                        nullable: false
+                    remarks: account id
+                    type: UUID
+                - column:
+                    constraints:
+                        nullable: false
+                    name: email
+                    remarks: email
+                    type: clob
                 - column:
                     constraints:
                         nullable: false

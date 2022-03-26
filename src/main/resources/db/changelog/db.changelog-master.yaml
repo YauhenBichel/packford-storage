@@ -16,5 +16,5 @@ databaseChangeLog:
       file: account/21022022-table-account-create.yaml
       relativeToChangelogFile: true
   - include:
-      file: account/21022022-table-email_account-create
+      file: account/21022022-table-email_account-create.yaml
       relativeToChangelogFile: true
