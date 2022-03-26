@@ -21,9 +21,11 @@ public class VerificationTokenService implements IVerificationTokenService {
 
     @Transactional( propagation = Propagation.REQUIRED )
     public VerificationToken createVerificationToken(UUID verificationTokenId, String token, EmailAccount emailAccount) {
-        VerificationToken verificationToken = new VerificationToken(verificationTokenId,
-                token,
-                emailAccount);
+        VerificationToken verificationToken = new VerificationToken();
+
+        verificationToken.setId(verificationTokenId);
+        verificationToken.setToken(token);
+        verificationToken.setEmailAccount(emailAccount);
 
         return verificationTokenRepository.save(verificationToken);
     }
@@ -35,7 +37,7 @@ public class VerificationTokenService implements IVerificationTokenService {
 
     @Transactional( propagation = Propagation.REQUIRED )
     public void deleteByAccountId(UUID accountId) {
-        Optional<VerificationToken> optDbVerificationToken = verificationTokenRepository.findFirstByAccount_Id(accountId);
+        Optional<VerificationToken> optDbVerificationToken = verificationTokenRepository.findFirstByEmailAccountId(accountId);
         optDbVerificationToken.ifPresent(verificationTokenRepository::delete);
     }
 }

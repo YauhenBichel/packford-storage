@@ -221,8 +221,7 @@ public class EmailAuthService implements IEmailAuthService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Optional<EmailAccount> findActiveAccount(String email) {
-        return emailAccountRepository
-                .findAccountByEmailAndActiveTrue(email.toLowerCase());
+        return emailAccountRepository.findEmailAccountByEmailAndActiveTrue(email.toLowerCase());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -249,5 +248,4 @@ public class EmailAuthService implements IEmailAuthService {
     public String generateHash(String password) {
         return emailAccountRepository.generateHashedPassword(password);
     }
-
 }

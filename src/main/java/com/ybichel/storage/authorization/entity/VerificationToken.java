@@ -38,40 +38,6 @@ public class VerificationToken extends Audit {
     @Column(name = "expiry_date")
     private Date expiryDate;
 
-    public VerificationToken() {}
-
-    public VerificationToken(UUID id, String token, EmailAccount emailAccount) {
-        this.setId(id);
-        this.setToken(token);
-        this.setEmailAccount(emailAccount);
-        this.setExpiryDate(calculateExpiryDate(EXPIRATION));
-    }
-
-    public UUID getId() {
-        return id;
-    }
-    public void setId(UUID id) {
-        this.id = id;
-    }
-    public String getToken() {
-        return token;
-    }
-    public void setToken(String token) {
-        this.token = token;
-    }
-    public EmailAccount getEmailAccount() {
-        return emailAccount;
-    }
-    public void setEmailAccount(EmailAccount emailAccount) {
-        this.emailAccount = emailAccount;
-    }
-    public Date getExpiryDate() {
-        return expiryDate;
-    }
-    public void setExpiryDate(Date expiryDate) {
-        this.expiryDate = expiryDate;
-    }
-
     private Date calculateExpiryDate(int expiryTimeInMinutes) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Timestamp(cal.getTime().getTime()));

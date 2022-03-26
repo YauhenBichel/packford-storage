@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -29,13 +30,13 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res) {
         try {
-            Account creds = new ObjectMapper()
-                    .readValue(req.getInputStream(), Account.class);
+            EmailAccount creds = new ObjectMapper()
+                    .readValue(req.getInputStream(), EmailAccount.class);
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getEmailAccount().getEmail(),
-                            creds.getEmailAccount().getPassword(),
+                            creds.getEmail(),
+                            creds.getPassword(),
                             new ArrayList<>())
             );
         } catch (IOException ex) {
@@ -47,7 +48,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
                                             FilterChain chain, Authentication auth) {
         String token = JWT.create()
-                .withSubject(((Account) auth.getPrincipal()).getEmailAccount().getEmail())
+                .withSubject(((EmailAccount) auth.getPrincipal()).getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtTokenUtil.JWT_TOKEN_VALIDITY))
                 .sign(Algorithm.HMAC512(jwtTokenUtil.getSecret().getBytes()));
         res.addHeader(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_PREFIX_VALUE + token);

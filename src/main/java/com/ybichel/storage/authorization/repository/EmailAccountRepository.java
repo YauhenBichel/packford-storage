@@ -12,21 +12,28 @@ import java.util.UUID;
 
 @Repository
 public interface EmailAccountRepository extends SpecificationPagingAndSortingRepository<EmailAccount, UUID> {
-    Optional<EmailAccount> findAccountByEmailAndActiveTrue(String email);
 
-    @Query( value = "SELECT crypt(:password, gen_salt('bf', 8))",
-            nativeQuery = true )
+    @Query(value = "SELECT * from email_account em_acc " +
+            "inner join account acc on em_acc.account_id = acc.id" +
+            " where em_acc.email = :email AND " +
+            "crypt(:password, em_acc.password) = em_acc.password AND " +
+            "em_acc.verificated = true",
+            nativeQuery = true)
+    Optional<EmailAccount> findEmailAccountByEmailAndActiveTrue(String email);
+
+    @Query(value = "SELECT crypt(:password, gen_salt('bf', 8))",
+            nativeQuery = true)
     String generateHashedPassword(@Param("password") String password);
 
     Optional<EmailAccount> findEmailAccountByAccount_Id(@Param("account_id") UUID accountId);
 
     Optional<EmailAccount> findAccountByEmailAndVerificatedTrue(String email);
 
-    @Query( value = "SELECT * from email_account acc " +
-            "where acc.email = :email AND " +
-            "crypt(:password, acc.password) = acc.password AND " +
-            "acc.verificated = true",
-            nativeQuery = true )
+    @Query(value = "SELECT * from email_account em_acc " +
+            "where em_acc.email = :email AND " +
+            "crypt(:password, em_acc.password) = em_acc.password AND " +
+            "em_acc.verificated = true",
+            nativeQuery = true)
     Optional<EmailAccount> findEmailAccountByEmailAndPassword(@Param("email") String email, @Param("password") String password);
 
     List<EmailAccount> findEmailAccountsByVerificatedFalse();

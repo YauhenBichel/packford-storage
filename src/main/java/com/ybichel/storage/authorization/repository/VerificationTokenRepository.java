@@ -10,5 +10,6 @@ import java.util.UUID;
 @Repository
 public interface VerificationTokenRepository extends SpecificationPagingAndSortingRepository<VerificationToken, UUID> {
     Optional<VerificationToken> findByToken(String token);
-    Optional<VerificationToken> findFirstByAccount_Id(UUID accountId);
+
+    Optional<VerificationToken> findFirstByEmailAccountId(UUID emailAccountId);
 }

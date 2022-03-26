@@ -1,9 +1,9 @@
 datasource:
   driver-class-name: 'org.postgresql.Driver'
-  schema: 'public'
-  url: 'jdbc:postgresql://localhost:5432/yb-storage'
-  username: 'yb'
-  password: 'pas$W0rd'
+  schema: 'dfejis77nibjdr'
+  url: 'jdbc:postgresql://ec2-52-214-125-106.eu-west-1.compute.amazonaws.com:5432/dfejis77nibjdr'
+  username: 'qexdvxvgdqtdgh'
+  password: 'bf7f8df51b60c17d1fcc333c3f7b63e57df7300022deb67d60eb6cee2bd4e5dd'
 
 # The SQL dialect makes Hibernate generate better SQL for the chosen database
 spring:

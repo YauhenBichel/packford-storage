@@ -34,8 +34,8 @@ public class ResetPasswordTokenService implements IResetPasswordTokenService {
     }
 
     @Transactional( propagation = Propagation.REQUIRED )
-    public void deleteByAccountId(UUID accountId) {
-        Optional<ResetPasswordToken> optDbVerificationToken = resetPasswordTokenRepository.findFirstByAccount_Id(accountId);
+    public void deleteByEmailAccountId(UUID emailAccountId) {
+        Optional<ResetPasswordToken> optDbVerificationToken = resetPasswordTokenRepository.findFirstByEmailAccountId(emailAccountId);
         optDbVerificationToken.ifPresent(resetPasswordTokenRepository::delete);
     }
 }

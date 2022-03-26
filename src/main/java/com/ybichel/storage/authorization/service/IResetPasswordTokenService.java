@@ -11,5 +11,5 @@ public interface IResetPasswordTokenService {
 
     Optional<ResetPasswordToken> findByToken(String token);
 
-    void deleteByAccountId(UUID accountId);
+    void deleteByEmailAccountId(UUID accountId);
 }

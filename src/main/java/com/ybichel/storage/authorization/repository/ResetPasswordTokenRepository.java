@@ -10,5 +10,5 @@ import java.util.UUID;
 @Repository
 public interface ResetPasswordTokenRepository extends SpecificationPagingAndSortingRepository<ResetPasswordToken, UUID> {
     Optional<ResetPasswordToken> findByToken(String token);
-    Optional<ResetPasswordToken> findFirstByAccount_Id(UUID accountId);
+    Optional<ResetPasswordToken> findFirstByEmailAccountId(UUID emailAccountId);
 }

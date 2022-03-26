@@ -1,6 +1,18 @@
 databaseChangeLog:
   - logicalFilePath: no-path
   - include:
+      file: account/22022022-create-extension-pgcrypto.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/22022022-table-verification_token-create.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/21022022-table-permission-create.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/22022022-table-reset_password_token-create.yaml
+      relativeToChangelogFile: true
+  - include:
       file: account/21022022-table-account-create.yaml
       relativeToChangelogFile: true
   - include:
