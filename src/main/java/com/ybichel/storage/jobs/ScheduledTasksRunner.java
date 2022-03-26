@@ -34,9 +34,7 @@ public class ScheduledTasksRunner extends TimerTask {
         scheduledTasks.forEach(scheduledTask -> {
             if (scheduledTask.getTaskName().equals(Constants.SCHEDULED_TASK_SEND_PUSH_NOTIFICATIONS)) {
                 try {
-                    scheduledTaskService.sendPushNotifications(scheduledTask);
-                } catch (FirebaseMessagingException ex) {
-                    logger.error(ex);
+                    //scheduledTaskService(scheduledTask);
                 } catch (Exception ex) {
                     logger.error(ex);
                 }

@@ -1,11 +1,11 @@
 databaseChangeLog:
   - logicalFilePath: no-path
   - changeSet:
-      id: 20092020-role_permission-add-links
-      author: bichel.eugen@gmail.com
+      id: 21022022-role-add-roles
+      author: yb3129h@gre.ac.uk
       changes:
         dbms: postgresql
         sqlFile:
-          path: sql/role_permission_add_links.sql
+          path: sql/role_add_roles.sql
           stripComments: true
           relativeToChangelogFile: true

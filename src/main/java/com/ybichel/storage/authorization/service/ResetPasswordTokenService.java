@@ -1,6 +1,6 @@
 package com.ybichel.storage.authorization.service;
 
-import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.entity.ResetPasswordToken;
 import com.ybichel.storage.authorization.repository.ResetPasswordTokenRepository;
 import org.springframework.stereotype.Service;
@@ -15,16 +15,15 @@ public class ResetPasswordTokenService implements IResetPasswordTokenService {
 
     private final ResetPasswordTokenRepository resetPasswordTokenRepository;
 
-    public ResetPasswordTokenService(ResetPasswordTokenRepository resetPasswordTokenRepository)
-    {
+    public ResetPasswordTokenService(ResetPasswordTokenRepository resetPasswordTokenRepository) {
         this.resetPasswordTokenRepository = resetPasswordTokenRepository;
     }
 
     @Transactional( propagation = Propagation.REQUIRED )
-    public ResetPasswordToken createVerificationToken(UUID resetPasswordTokenId, String token, Account account) {
+    public ResetPasswordToken createVerificationToken(UUID resetPasswordTokenId, String token, EmailAccount emailAccount) {
         ResetPasswordToken resetPasswordToken = new ResetPasswordToken(resetPasswordTokenId,
                 token,
-                account);
+                emailAccount);
 
         return resetPasswordTokenRepository.save(resetPasswordToken);
     }

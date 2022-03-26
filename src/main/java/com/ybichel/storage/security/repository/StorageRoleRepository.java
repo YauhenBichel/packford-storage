@@ -9,5 +9,5 @@ import java.util.UUID;
 
 @Repository
 public interface StorageRoleRepository extends SpecificationPagingAndSortingRepository<StorageRole, UUID> {
-    Optional<StorageRole> findTwoayRoleByNameEquals(String name);
+    Optional<StorageRole> findStorageRoleByNameEquals(String name);
 }

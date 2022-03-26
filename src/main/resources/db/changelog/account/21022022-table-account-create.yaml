@@ -1,28 +1,24 @@
 databaseChangeLog:
 - logicalFilePath: no-path
 - changeSet:
-    id: 20092020-table-permission-create
-    author: bichel.eugen@gmail.com
-    preConditions:
-        - onFail: MARK_RAN
-        - not:
-              - tableExists:
-                    tableName: permission
+    id: 21022022-table-account-create
+    author: yb3129h@gre.ac.uk
     changes:
         - createTable:
             columns:
                 - column:
-                    name: id
                     constraints:
                         nullable: false
                         primaryKey: true
+                    name: id
                     type: UUID
                 - column:
-                      name: name
                       constraints:
                           nullable: false
-                      remarks: permission name
-                      type: clob
+                      name: active
+                      defaultValueBoolean: true
+                      remarks: active
+                      type: BOOLEAN
                 - column:
                     constraints:
                         nullable: false
@@ -37,4 +33,4 @@ databaseChangeLog:
                     name: modified
                     remarks: Record modified
                     type: datetime
-            tableName: permission
+            tableName: account

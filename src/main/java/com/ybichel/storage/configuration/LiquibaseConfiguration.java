@@ -8,24 +8,24 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 @Configuration
 public class LiquibaseConfiguration {
-    @Value( "${spring.liquibase.change-log}")
+    @Value("${spring.liquibase.change-log}")
     private String changeLogPath;
-    @Value( "${spring.liquibase.url}")
+    @Value("${spring.liquibase.url}")
     private String url;
-    @Value( "${spring.liquibase.user}")
+    @Value("${spring.liquibase.user}")
     private String user;
-    @Value( "${spring.liquibase.password}")
+    @Value("${spring.liquibase.password}")
     private String password;
 
-    @Value( "${spring.profiles.active}")
+    @Value("${spring.profiles.active}")
     private String activeProfile;
 
     @Bean
     public SpringLiquibase liquibase() {
         SpringLiquibase liquibase = new SpringLiquibase();
 
-        liquibase.setDataSource( getDataSource() );
-        liquibase.setChangeLog( changeLogPath );
+        liquibase.setDataSource(getDataSource());
+        liquibase.setChangeLog(changeLogPath);
 
         return liquibase;
     }

@@ -1,8 +1,13 @@
 databaseChangeLog:
 - logicalFilePath: no-path
 - changeSet:
-    id: 17062020-table-scheduled_task-create
-    author: bichel.eugen@gmail.com
+    id: 21022022-table-role-create
+    author: yb3129h@gre.ac.uk
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+              - tableExists:
+                    tableName: role
     changes:
         - createTable:
             columns:
@@ -13,17 +18,11 @@ databaseChangeLog:
                         primaryKey: true
                     type: UUID
                 - column:
-                      name: taskName
+                      name: name
                       constraints:
                           nullable: false
-                      remarks: scheduled task name
+                      remarks: permission name
                       type: clob
-                - column:
-                      name: nextDateTime
-                      remarks: Next scheduled date time
-                      type: datetime
-                      constraints:
-                          nullable: false
                 - column:
                     constraints:
                         nullable: false
@@ -38,4 +37,4 @@ databaseChangeLog:
                     name: modified
                     remarks: Record modified
                     type: datetime
-            tableName: scheduled_task
+            tableName: role

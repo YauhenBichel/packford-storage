@@ -34,8 +34,8 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
             return authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            creds.getEmail(),
-                            creds.getPassword(),
+                            creds.getEmailAccount().getEmail(),
+                            creds.getEmailAccount().getPassword(),
                             new ArrayList<>())
             );
         } catch (IOException ex) {
@@ -47,7 +47,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res,
                                             FilterChain chain, Authentication auth) {
         String token = JWT.create()
-                .withSubject(((Account) auth.getPrincipal()).getEmail())
+                .withSubject(((Account) auth.getPrincipal()).getEmailAccount().getEmail())
                 .withExpiresAt(new Date(System.currentTimeMillis() + jwtTokenUtil.JWT_TOKEN_VALIDITY))
                 .sign(Algorithm.HMAC512(jwtTokenUtil.getSecret().getBytes()));
         res.addHeader(Constants.AUTHORIZATION_HEADER_KEY, Constants.AUTHORIZATION_HEADER_PREFIX_VALUE + token);

@@ -1,13 +1,13 @@
 databaseChangeLog:
 - logicalFilePath: no-path
 - changeSet:
-    id: 14012021-table-apple_account-create
-    author: bichel.eugen@gmail.com
+    id: 21022022-table-permission-create
+    author: yb3129h@gre.ac.uk
     preConditions:
-      - onFail: MARK_RAN
-      - not:
-          - tableExists:
-              tableName: apple_account
+        - onFail: MARK_RAN
+        - not:
+              - tableExists:
+                    tableName: permission
     changes:
         - createTable:
             columns:
@@ -18,17 +18,11 @@ databaseChangeLog:
                         primaryKey: true
                     type: UUID
                 - column:
-                    constraints:
-                        nullable: false
-                    name: identity_token
-                    remarks: apple identity token
-                    type: clob
-                - column:
-                    constraints:
-                        nullable: false
-                    name: email
-                    remarks: Apple id email
-                    type: clob
+                      name: name
+                      constraints:
+                          nullable: false
+                      remarks: permission name
+                      type: clob
                 - column:
                     constraints:
                         nullable: false
@@ -43,4 +37,4 @@ databaseChangeLog:
                     name: modified
                     remarks: Record modified
                     type: datetime
-            tableName: apple_account
+            tableName: permission

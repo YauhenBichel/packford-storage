@@ -98,7 +98,7 @@ public class EmailAuthController {
 
         EmailVerificationStatusResponseVO responseVO = new EmailVerificationStatusResponseVO();
         responseVO.setAccountId(id);
-        responseVO.setVerificated(authenticatedAccount.getAccount().getVerificated());
+        responseVO.setVerificated(authenticatedAccount.getAccount().getEmailAccount().getVerificated());
         responseVO.setJwtToken(authenticatedAccount.getJwtToken());
 
         return new ResponseEntity<>(responseVO, HttpStatus.OK);

@@ -8,11 +8,8 @@ import java.util.UUID;
 
 @Data
 public class ResetPasswordRequestVO {
-
     @NotNull
     private UUID token;
     @NotBlank
     private String password;
-    @NotBlank
-    private String clientApp;
 }

@@ -1,12 +1,18 @@
-package com.ybichel.storage.account.entity;
+package com.ybichel.storage.authorization.entity;
 
+import com.ybichel.storage.account.entity.Account;
 import com.ybichel.storage.common.model.Audit;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -32,4 +38,9 @@ public class EmailAccount extends Audit {
 
     @Column(name = "verificated")
     private Boolean verificated = Boolean.FALSE;
+
+    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @JoinColumn(name = "account_id")
+    @Fetch(FetchMode.JOIN)
+    private Account account;
 }

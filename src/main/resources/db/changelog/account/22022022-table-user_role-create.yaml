@@ -1,35 +1,28 @@
 databaseChangeLog:
 - logicalFilePath: no-path
 - changeSet:
-    id: 15052020-table-reset_password_token-create
-    author: bichel.eugen@gmail.com
+    id: 22022022-table-user_role-create
+    author: yb3129h@gre.ac.uk
+    preConditions:
+        - onFail: MARK_RAN
+        - not:
+              - tableExists:
+                    tableName: user_role
     changes:
         - createTable:
             columns:
                 - column:
-                    name: id
+                    name: user_id
                     constraints:
                         nullable: false
-                        primaryKey: true
+                    remarks: account id
                     type: UUID
                 - column:
-                      name: account_id
+                      name: role_id
                       constraints:
                           nullable: false
-                      remarks: account id
+                      remarks: role id
                       type: UUID
-                - column:
-                    constraints:
-                        nullable: false
-                    name: token
-                    remarks: verification token
-                    type: clob
-                - column:
-                    constraints:
-                        nullable: false
-                    name: expiry_date
-                    remarks: expiry date
-                    type: date
                 - column:
                     constraints:
                         nullable: false
@@ -44,4 +37,4 @@ databaseChangeLog:
                     name: modified
                     remarks: Record modified
                     type: datetime
-            tableName: reset_password_token
+            tableName: user_role

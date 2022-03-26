@@ -5,7 +5,6 @@ import lombok.Data;
 
 @Data
 public class ErrorResponseVO {
-
     private Account account;
     private Integer errorCode;
 }

@@ -1,13 +1,13 @@
 databaseChangeLog:
 - logicalFilePath: no-path
 - changeSet:
-    id: 20092020-table-role-create
-    author: bichel.eugen@gmail.com
+    id: 21022022-table-email_account-create
+    author: yb3129h@gre.ac.uk
     preConditions:
-        - onFail: MARK_RAN
-        - not:
-              - tableExists:
-                    tableName: role
+      - onFail: MARK_RAN
+      - not:
+          - tableExists:
+              tableName: email_account
     changes:
         - createTable:
             columns:
@@ -18,11 +18,24 @@ databaseChangeLog:
                         primaryKey: true
                     type: UUID
                 - column:
-                      name: name
                       constraints:
                           nullable: false
-                      remarks: permission name
+                      name: email
+                      remarks: email
                       type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: password
+                    remarks: Password
+                    type: clob
+                - column:
+                    constraints:
+                        nullable: false
+                    name: verificated
+                    defaultValueBoolean: false
+                    remarks: veridicated by email
+                    type: BOOLEAN
                 - column:
                     constraints:
                         nullable: false
@@ -37,4 +50,4 @@ databaseChangeLog:
                     name: modified
                     remarks: Record modified
                     type: datetime
-            tableName: role
+            tableName: email_account

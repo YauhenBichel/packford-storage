@@ -1,6 +1,6 @@
 package com.ybichel.storage.mail;
 
-import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.service.IResetPasswordTokenService;
 import com.ybichel.storage.authorization.service.IVerificationTokenService;
 import org.apache.logging.log4j.LogManager;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class MailService {
+public class MailService implements IMailService {
 
     private static final Logger logger = LogManager.getLogger(MailService.class);
 
@@ -26,42 +26,42 @@ public class MailService {
         this.resetPasswordTokenService = resetPasswordTokenService;
     }
 
-    public void confirmRegistration(Account account) {
+    public void confirmRegistration(EmailAccount emailAccount) {
 
-        logger.info("confirmRegistration email = {}", account.getEmail());
+        logger.info("confirmRegistration email = {}", emailAccount.getEmail());
 
         final String appUrl = "localhost";
 
         UUID id = UUID.randomUUID();
         String token = UUID.randomUUID().toString();
-        verificationTokenService.createVerificationToken(id, token, account);
+        verificationTokenService.createVerificationToken(id, token, emailAccount);
 
-        final String recipientAddress = account.getEmail();
+        final String recipientAddress = emailAccount.getEmail();
         final String subject = "Registration Confirmation";
         final String confirmationUrl = appUrl + "/email-confirmation?token=" + token;
         final String greetingMessage = "Please confirm your email address.";
         final String linkLabel = "Confirm Email";
 
-        final String greeting = Constants.getGreetingTemplate(account.getFirstName(), greetingMessage);
+        final String greeting = Constants.getGreetingTemplate(/*account.getFirstName()*/"test", greetingMessage);
         final String button = Constants.getButtonLink(confirmationUrl, linkLabel);
         final String message = generateEmailBody(Constants.IMAGE_ROW_TEMPLATE, greeting, button, recipientAddress);
 
         mailClient.prepareAndSend(recipientAddress, subject, message);
     }
 
-    public void resetPassword(Account account) {
+    public void resetPassword(EmailAccount emailAccount) {
 
-        logger.info("resetPassword email = {}", account.getEmail());
+        logger.info("resetPassword email = {}", emailAccount.getEmail());
 
         UUID id = UUID.randomUUID();
         String token = UUID.randomUUID().toString();
-        resetPasswordTokenService.createVerificationToken(id, token, account);
+        resetPasswordTokenService.createVerificationToken(id, token, emailAccount);
 
-        String recipientAddress = account.getEmail();
+        String recipientAddress = emailAccount.getEmail();
         String subject = "Reset Password";
         String greetingMessage = "Please reset your password";
 
-        final String greeting = Constants.getGreetingTemplate(account.getFirstName(), greetingMessage);
+        final String greeting = Constants.getGreetingTemplate(/*account.getFirstName()*/"test", greetingMessage);
         final String button = Constants.getButtonLink("localhost/reset-password?token=" + token, "Reset Password");
         final String message = generateEmailBody(Constants.IMAGE_ROW_TEMPLATE, greeting, button, recipientAddress);
 

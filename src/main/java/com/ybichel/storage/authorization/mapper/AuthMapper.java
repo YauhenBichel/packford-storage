@@ -14,10 +14,7 @@ public class AuthMapper {
         RegistrationResponseVO responseVO = new RegistrationResponseVO();
 
         responseVO.setId(dbAccount.getId());
-        responseVO.setFirstName(dbAccount.getFirstName());
-        responseVO.setEmail(dbAccount.getEmail());
         responseVO.setActive(dbAccount.getActive());
-        responseVO.setVerificated(dbAccount.getVerificated());
 
         Set<String> roles = dbAccount.getRoles().stream()
                 .map(StorageRole::getName)

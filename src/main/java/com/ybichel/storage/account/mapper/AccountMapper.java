@@ -14,19 +14,15 @@ import java.util.stream.Collectors;
 @Component
 public class AccountMapper {
 
-
     public Account toAccount(UUID accountId, String hashedPassWithSalt, RegistrationRequestVO registrationRequest) {
         Account account = new Account();
 
         account.setId(accountId);
-        account.setPassword(hashedPassWithSalt);
-        account.setEmail(registrationRequest.getEmail().toLowerCase());
-        account.setFirstName(registrationRequest.getFirstName());
         account.setActive(true);
-        account.setVerificated(false);
 
         return account;
     }
+
     public Account toAccount(Account dbAccount, AccountRequestVO accountRequestVO) {
         return dbAccount;
     }
@@ -35,10 +31,7 @@ public class AccountMapper {
         AccountResponseVO responseVO = new AccountResponseVO();
 
         responseVO.setId(dbAccount.getId());
-        responseVO.setFirstName(dbAccount.getFirstName());
-        responseVO.setEmail(dbAccount.getEmail());
         responseVO.setActive(dbAccount.getActive());
-        responseVO.setVerificated(dbAccount.getVerificated());
         responseVO.setCreated(dbAccount.getCreated());
         responseVO.setModified(dbAccount.getModified());
 

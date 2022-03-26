@@ -1,11 +1,11 @@
 databaseChangeLog:
   - logicalFilePath: no-path
   - changeSet:
-      id: 18062020-scheduled_task-add-init-date-pn.yaml
-      author: bichel.eugen@gmail.com
+      id: 21022022-permission-add-permissions
+      author: yb3129h@gre.ac.uk
       changes:
         dbms: postgresql
         sqlFile:
-          path: sql/scheduled_task_push_notifi_task.sql
+          path: sql/permission_add_permissions.sql
           stripComments: true
           relativeToChangelogFile: true

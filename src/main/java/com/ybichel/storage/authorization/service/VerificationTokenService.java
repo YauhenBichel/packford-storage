@@ -1,6 +1,6 @@
 package com.ybichel.storage.authorization.service;
 
-import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.entity.VerificationToken;
 import com.ybichel.storage.authorization.repository.VerificationTokenRepository;
 import org.springframework.stereotype.Service;
@@ -15,16 +15,15 @@ public class VerificationTokenService implements IVerificationTokenService {
 
     private final VerificationTokenRepository verificationTokenRepository;
 
-    public VerificationTokenService(VerificationTokenRepository verificationTokenRepository)
-    {
+    public VerificationTokenService(VerificationTokenRepository verificationTokenRepository) {
         this.verificationTokenRepository = verificationTokenRepository;
     }
 
     @Transactional( propagation = Propagation.REQUIRED )
-    public VerificationToken createVerificationToken(UUID verificationTokenId, String token, Account account) {
+    public VerificationToken createVerificationToken(UUID verificationTokenId, String token, EmailAccount emailAccount) {
         VerificationToken verificationToken = new VerificationToken(verificationTokenId,
                 token,
-                account);
+                emailAccount);
 
         return verificationTokenRepository.save(verificationToken);
     }

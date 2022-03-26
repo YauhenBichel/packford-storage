@@ -1,5 +1,6 @@
 package com.ybichel.storage.account.entity;
 
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.common.PostgreSQLEnumType;
 import com.ybichel.storage.common.model.Audit;
 import com.ybichel.storage.security.entity.StorageRole;
@@ -19,7 +20,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -38,24 +38,8 @@ public class Account extends Audit {
     @Column(name = "id")
     private UUID id;
 
-    @Column(name = "first_name")
-    private String firstName;
-
-    @Column(name = "last_name")
-    private String lastName;
-
-    @Size(min = 3)
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "password")
-    private String password;
-
     @Column(name = "active")
     private Boolean active = Boolean.TRUE;
-
-    @Column(name = "verificated")
-    private Boolean verificated = Boolean.FALSE;
 
     @ManyToMany
     @JoinTable(
@@ -65,9 +49,4 @@ public class Account extends Audit {
             inverseJoinColumns = @JoinColumn(
                     name = "role_id", referencedColumnName = "id"))
     private Set<StorageRole> roles = new HashSet<>();
-
-    @OneToOne(cascade = {CascadeType.ALL}, orphanRemoval = true)
-    @JoinColumn(name = "email_account_id")
-    @Fetch(FetchMode.JOIN)
-    private EmailAccount emailAccount;
 }

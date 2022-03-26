@@ -3,6 +3,7 @@ package com.ybichel.storage.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.security.model.JwtToken;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -77,9 +78,9 @@ public class JwtTokenUtil implements Serializable {
         return expiration.before(new Date());
     }
 
-    public String generateToken(Account account) {
+    public String generateToken(EmailAccount account) {
 
-        List<String> roles = account.getRoles()
+        List<String> roles = account.getAccount().getRoles()
                 .stream()
                 .map(role -> role.getName())
                 .collect(Collectors.toList());
@@ -93,13 +94,7 @@ public class JwtTokenUtil implements Serializable {
         }
 
         Map<String, Object> claims = new HashMap<>();
-
-        String email;
-        if(account.getEmailAccount() != null) {
-            email = account.getEmailAccount().getEmail();
-        } else {
-            email = account.getEmail();
-        }
+        String email = account.getEmail();
 
         claims.put(Constants.JWT_CLAIMS_KEY_ACCOUNT_ID, account.getId());
         claims.put(Constants.JWT_CLAIMS_KEY_EMAIL, email);

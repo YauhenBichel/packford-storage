@@ -1,7 +1,7 @@
 package com.ybichel.storage.authorization.entity;
 
-import com.ybichel.storage.account.entity.Account;
 import com.ybichel.storage.common.model.Audit;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+@Data
 @Entity
 @Table( name = "reset_password_token")
 public class ResetPasswordToken extends Audit {
@@ -24,15 +25,15 @@ public class ResetPasswordToken extends Audit {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column( name = "id" )
+    @Column(name = "id")
     private UUID id;
 
-    @Column( name = "token" )
+    @Column(name = "token")
     private String token;
 
-    @OneToOne(targetEntity = Account.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = EmailAccount.class, fetch = FetchType.EAGER)
     @JoinColumn(nullable = false, name = "account_id")
-    private Account account;
+    private EmailAccount emailAccount;
 
     @Column(name = "expiry_date")
     private Date expiryDate;
@@ -40,57 +41,43 @@ public class ResetPasswordToken extends Audit {
     public ResetPasswordToken() {
     }
 
-    public ResetPasswordToken(UUID id, String token, Account account) {
+    public ResetPasswordToken(UUID id, String token, EmailAccount emailAccount) {
         this.setId(id);
         this.setToken(token);
-        this.setAccount(account);
+        this.setEmailAccount(emailAccount);
         this.setExpiryDate(calculateExpiryDate(EXPIRATION));
     }
 
     public UUID getId() {
         return id;
     }
+
     public void setId(UUID id) {
         this.id = id;
     }
+
     public String getToken() {
         return token;
     }
+
     public void setToken(String token) {
         this.token = token;
     }
-    public Account getAccount() {
-        return account;
+
+    public EmailAccount getEmailAccount() {
+        return emailAccount;
     }
-    public void setAccount(Account account) {
-        this.account = account;
+
+    public void setEmailAccount(EmailAccount emailAccount) {
+        this.emailAccount = emailAccount;
     }
+
     public Date getExpiryDate() {
         return expiryDate;
     }
+
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ResetPasswordToken)) return false;
-
-        ResetPasswordToken that = (ResetPasswordToken) o;
-
-        if (id != null ? !id.equals(that.id) : that.id != null) return false;
-        if (token != null ? !token.equals(that.token) : that.token != null) return false;
-        if (account != null ? !account.equals(that.account) : that.account != null) return false;
-        return expiryDate != null ? expiryDate.equals(that.expiryDate) : that.expiryDate == null;
-    }
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (token != null ? token.hashCode() : 0);
-        result = 31 * result + (account != null ? account.hashCode() : 0);
-        result = 31 * result + (expiryDate != null ? expiryDate.hashCode() : 0);
-        return result;
     }
 
     private Date calculateExpiryDate(int expiryTimeInMinutes) {

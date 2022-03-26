@@ -1,14 +1,14 @@
 datasource:
   driver-class-name: 'org.postgresql.Driver'
   schema: 'public'
-  url: 'jdbc:postgresql://localhost:5433/storage'
-  username: 'postgres'
-  password: 'password'
+  url: 'jdbc:postgresql://localhost:5432/yb-storage'
+  username: 'yb'
+  password: 'pas$W0rd'
 
 # The SQL dialect makes Hibernate generate better SQL for the chosen database
 spring:
   datasource:
-    name: 'TwoayMoleCarePostgreSQL'
+    name: 'StoragePostgreSQL'
     driverClassName: '${datasource.driver-class-name}'
     url: '${datasource.url}'
     username: '${datasource.username}'

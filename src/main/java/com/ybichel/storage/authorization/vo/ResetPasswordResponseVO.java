@@ -7,7 +7,5 @@ import javax.validation.constraints.NotBlank;
 
 @Data
 public class ResetPasswordResponseVO {
-    @NotBlank
-    private String clientApp;
     private Account account;
 }

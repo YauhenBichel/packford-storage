@@ -8,11 +8,8 @@ import java.util.UUID;
 @Data
 public class AccountResponseVO {
     private UUID id;
-    private String firstName;
-    private String email;
     private Boolean active;
-    private Boolean verificated;
+    private Set<String> roles;
     private LocalDateTime created;
     private LocalDateTime modified;
-    private Set<String> roles;
 }

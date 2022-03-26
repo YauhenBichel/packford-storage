@@ -8,6 +8,4 @@ import javax.validation.constraints.NotBlank;
 public class EmailResetPasswordRequestVO {
     @NotBlank
     private String email;
-    @NotBlank
-    private String clientApp;
 }

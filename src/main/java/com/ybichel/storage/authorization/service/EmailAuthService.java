@@ -2,12 +2,13 @@ package com.ybichel.storage.authorization.service;
 
 import com.ybichel.storage.account.entity.Account;
 import com.ybichel.storage.account.service.IAccountService;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.entity.ResetPasswordToken;
 import com.ybichel.storage.authorization.entity.VerificationToken;
 import com.ybichel.storage.authorization.mapper.AuthenticatedAccountMapper;
-import com.ybichel.storage.authorization.mapper.AuthMapper;
 import com.ybichel.storage.authorization.model.AuthenticatedAccount;
 import com.ybichel.storage.authorization.model.VerificationTokenStatus;
+import com.ybichel.storage.authorization.repository.EmailAccountRepository;
 import com.ybichel.storage.authorization.vo.ConfirmRegistrationResponseVO;
 import com.ybichel.storage.authorization.vo.LoginRequestVO;
 import com.ybichel.storage.authorization.vo.RegistrationRequestVO;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Calendar;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -44,40 +46,42 @@ public class EmailAuthService implements IEmailAuthService {
     private final AuthenticatedAccountMapper authenticatedAccountMapper;
     private final MailService mailService;
     private final JwtTokenUtil jwtTokenUtil;
+    private final EmailAccountRepository emailAccountRepository;
 
     public EmailAuthService(IAccountService accountService,
                             IVerificationTokenService verificationTokenService,
                             IResetPasswordTokenService resetPasswordTokenService,
                             AuthenticatedAccountMapper authenticatedAccountMapper,
-                            AuthMapper authMapper,
                             MailService mailService,
-                            JwtTokenUtil jwtTokenUtil) {
+                            JwtTokenUtil jwtTokenUtil,
+                            EmailAccountRepository emailAccountRepository) {
         this.accountService = accountService;
         this.verificationTokenService = verificationTokenService;
         this.resetPasswordTokenService = resetPasswordTokenService;
         this.authenticatedAccountMapper = authenticatedAccountMapper;
         this.mailService = mailService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.emailAccountRepository = emailAccountRepository;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = MailException.class)
     public Account register(UUID userId, RegistrationRequestVO registrationRequestVO) {
-        final String hashedPassWithSalt = accountService.generateHash(registrationRequestVO.getPassword());
+        final String hashedPassWithSalt = this.generateHash(registrationRequestVO.getPassword());
 
-        Optional<Account> optDbAccount = accountService.findActiveAccount(registrationRequestVO.getEmail());
+        Optional<EmailAccount> optDbEmailAccount = this.findActiveAccount(registrationRequestVO.getEmail());
 
-        if (optDbAccount.isPresent()) {
-            Account dbAccount = optDbAccount.get();
+        if (optDbEmailAccount.isPresent()) {
+            EmailAccount dbEmailAccount = optDbEmailAccount.get();
 
-            if (Boolean.TRUE.equals(dbAccount.getVerificated())) {
-                logger.info("The same verificated account id = {} exists.", dbAccount.getId());
+            if (Boolean.TRUE.equals(dbEmailAccount.getVerificated())) {
+                logger.info("The same verificated account id = {} exists.", dbEmailAccount.getAccount().getId());
                 throw new AccountDuplicateException("The same verificated account exists.");
             }
 
-            throw new AccountNotVerificatedException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_VERIFICATED, dbAccount.getId());
+            throw new AccountNotVerificatedException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_VERIFICATED, dbEmailAccount.getAccount().getId());
         }
 
-        final Account dbAccount = accountService.createAccount(userId, hashedPassWithSalt, registrationRequestVO);
+        final EmailAccount dbAccount = accountService.createAccount(userId, hashedPassWithSalt, registrationRequestVO);
         mailService.confirmRegistration(dbAccount);
 
         return dbAccount;
@@ -86,22 +90,22 @@ public class EmailAuthService implements IEmailAuthService {
     @Transactional(propagation = Propagation.REQUIRED)
     public Optional<Account> verifyEmail(UUID accountId) {
         Optional<Account> optDbAccount = accountService.findActiveAccount(accountId);
-        optDbAccount.ifPresent(mailService::confirmRegistration);
+        Optional<EmailAccount> optEmailAccount = emailAccountRepository.findEmailAccountByAccount_Id(optDbAccount.get().getId());
+        optEmailAccount.ifPresent(mailService::confirmRegistration);
 
         return optDbAccount;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public AuthenticatedAccount login(LoginRequestVO loginRequestVO) {
-        Optional<Account> optDbAccount = accountService.findActiveAccountByEmailAndPassword
+        Optional<EmailAccount> optDbAccount = this.findActiveAccountByEmailAndPassword
                 (loginRequestVO.getEmail(), loginRequestVO.getPassword());
 
         if (optDbAccount.isEmpty()) {
             throw new AccountNotFoundException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_FOUND);
-
         }
 
-        Account dbAccount = optDbAccount.get();
+        EmailAccount dbAccount = optDbAccount.get();
 
         if (Boolean.FALSE.equals(dbAccount.getVerificated())) {
             throw new AccountNotVerificatedException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_VERIFICATED, dbAccount.getId());
@@ -109,7 +113,7 @@ public class EmailAuthService implements IEmailAuthService {
 
         final String jwtToken = jwtTokenUtil.generateToken(dbAccount);
 
-        if (Boolean.FALSE.equals(dbAccount.getActive())) {
+        if (Boolean.FALSE.equals(dbAccount.getAccount().getActive())) {
             logger.warn("The account id = {} is not active.", dbAccount.getId());
             throw new AccountNotActiveException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_ACTIVE);
         }
@@ -131,10 +135,11 @@ public class EmailAuthService implements IEmailAuthService {
             return responseVO;
         }
 
-        Account account = optDbToken.get().getAccount();
+        EmailAccount emailAccount = optDbToken.get().getEmailAccount();
         Calendar cal = Calendar.getInstance();
         if ((optDbToken.get().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
-            logger.info("Token is expired. Please register a new account. Account id = {}", account.getId());
+            logger.info("Token is expired. Please register a new account. Account id = {}",
+                    emailAccount.getAccount().getId());
 
             responseVO.setMessage("Token is expired. Please register a new account.");
             responseVO.setTokenStatus(VerificationTokenStatus.EXPIRED_TOKEN);
@@ -142,9 +147,8 @@ public class EmailAuthService implements IEmailAuthService {
             return responseVO;
         }
 
-        account.setVerificated(true);
-        account.getEmailAccount().setVerificated(true);
-        accountService.saveAccount(account);
+        emailAccount.setVerificated(true);
+        emailAccountRepository.save(emailAccount);
 
         responseVO.setMessage("Success. Email is confirmed.");
         responseVO.setTokenStatus(VerificationTokenStatus.VALID_TOKEN);
@@ -155,7 +159,6 @@ public class EmailAuthService implements IEmailAuthService {
     @Transactional(propagation = Propagation.REQUIRED)
     public AuthenticatedAccount getEmailVerificationStatus(UUID accountId) {
         Optional<Account> optDbAccount = accountService.findActiveAccount(accountId);
-
         if (optDbAccount.isEmpty()) {
             throw new AccountNotFoundException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_FOUND);
         }
@@ -163,50 +166,82 @@ public class EmailAuthService implements IEmailAuthService {
         Account dbAccount = optDbAccount.get();
         if (Boolean.FALSE.equals(dbAccount.getActive())) {
             logger.warn("The account id = {} is not active", dbAccount.getId());
-
             throw new AccountNotActiveException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_ACTIVE);
         }
 
-        final String jwtToken = jwtTokenUtil.generateToken(dbAccount);
-        return authenticatedAccountMapper.toLoginModel(optDbAccount, jwtToken);
+        Optional<EmailAccount> optEmailAccount = emailAccountRepository.findEmailAccountByAccount_Id(dbAccount.getId());
+        final String jwtToken = jwtTokenUtil.generateToken(optEmailAccount.get());
+        return authenticatedAccountMapper.toLoginModel(optEmailAccount.get(), jwtToken);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void sendEmailNotificationToResetPassword(EmailResetPasswordRequestVO requestVO) {
-        Optional<Account> optDbAccount = accountService.findActiveAccount(requestVO.getEmail());
+        Optional<EmailAccount> optDbAccount = this.findActiveAccount(requestVO.getEmail());
 
         if (optDbAccount.isEmpty()) {
             throw new AccountNotFoundException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_FOUND);
         }
 
-        Account dbAccount = optDbAccount.get();
-        if (Boolean.FALSE.equals(dbAccount.getActive())) {
-            logger.warn("The account id = {} is not active", dbAccount.getId());
+        EmailAccount emailAccount = optDbAccount.get();
+        if (Boolean.FALSE.equals(emailAccount.getAccount().getActive())) {
+            logger.warn("The account id = {} is not active", emailAccount.getAccount().getId());
             throw new AccountNotActiveException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_ACTIVE);
         }
 
-        mailService.resetPassword(dbAccount);
+        mailService.resetPassword(emailAccount);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Account resetPassword(ResetPasswordRequestVO requestVO) {
+    public EmailAccount resetPassword(ResetPasswordRequestVO requestVO) {
         Optional<ResetPasswordToken> optDbToken = resetPasswordTokenService.findByToken(requestVO.getToken().toString());
 
         if (optDbToken.isEmpty()) {
             throw new ResetPasswordTokenNotFoundException(Constants.ERROR_MESSAGE_BAD_TOKEN);
         }
 
-        Account dbAccount = optDbToken.get().getAccount();
+        EmailAccount dbEmailAccount = optDbToken.get().getEmailAccount();
 
         Calendar cal = Calendar.getInstance();
         if ((optDbToken.get().getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             throw new ResetPasswordTokenExpiredException(Constants.ERROR_MESSAGE_TOKEN_IS_EXPIRED);
         }
 
-        final String hashedPassWithSalt = accountService.generateHash(requestVO.getPassword());
-        dbAccount.setPassword(hashedPassWithSalt);
-        accountService.saveAccount(dbAccount);
+        final String hashedPassWithSalt = this.generateHash(requestVO.getPassword());
+        dbEmailAccount.setPassword(hashedPassWithSalt);
+        emailAccountRepository.save(dbEmailAccount);
 
-        return dbAccount;
+        return dbEmailAccount;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Optional<EmailAccount> findActiveAccount(String email) {
+        return emailAccountRepository
+                .findAccountByEmailAndActiveTrue(email.toLowerCase());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Optional<EmailAccount> findActiveAccountByEmailAndPassword(String email, String password) {
+        return emailAccountRepository.findEmailAccountByEmailAndPasswordAndActiveTrue(email.toLowerCase(), password);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Optional<EmailAccount> findActiveAndVerificatedAccount(String email) {
+        return emailAccountRepository.findEmailAccountByEmailAndActiveTrueAndVerificatedTrue(email.toLowerCase());
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public List<EmailAccount> findUnverifiedAccounts() {
+        return emailAccountRepository.findEmailAccountsByVerificatedFalse();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Optional<EmailAccount> findActiveAndVerificatedAccount(String email, String password) {
+        return emailAccountRepository.findAccountByEmailAndPassword(email.toLowerCase(), password);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public String generateHash(String password) {
+        return emailAccountRepository.generateHashedPassword(password);
+    }
+
 }
