@@ -65,9 +65,8 @@ public class EmailAuthService implements IEmailAuthService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = MailException.class)
-    public Account register(UUID userId, RegistrationRequestVO registrationRequestVO) {
+    public Account register(UUID accountId, RegistrationRequestVO registrationRequestVO) {
         final String hashedPassWithSalt = this.generateHash(registrationRequestVO.getPassword());
-
         Optional<EmailAccount> optDbEmailAccount = this.findActiveAccount(registrationRequestVO.getEmail());
 
         if (optDbEmailAccount.isPresent()) {
@@ -81,8 +80,15 @@ public class EmailAuthService implements IEmailAuthService {
             throw new AccountNotVerificatedException(Constants.ERROR_MESSAGE_ACCOUNT_IS_NOT_VERIFICATED, dbEmailAccount.getAccount().getId());
         }
 
-        final EmailAccount dbAccount = accountService.createAccount(userId, hashedPassWithSalt, registrationRequestVO);
-        mailService.confirmRegistration(dbAccount);
+        final Account dbAccount = accountService.createAccount(accountId);
+
+        EmailAccount emailAccount = new EmailAccount();
+        emailAccount.setId(UUID.randomUUID());
+        emailAccount.setAccount(dbAccount);
+        emailAccount.setPassword(hashedPassWithSalt);
+        emailAccount.setEmail(registrationRequestVO.getEmail());
+
+        mailService.confirmRegistration(emailAccount);
 
         return dbAccount;
     }
@@ -221,12 +227,12 @@ public class EmailAuthService implements IEmailAuthService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Optional<EmailAccount> findActiveAccountByEmailAndPassword(String email, String password) {
-        return emailAccountRepository.findEmailAccountByEmailAndPasswordAndActiveTrue(email.toLowerCase(), password);
+        return emailAccountRepository.findEmailAccountByEmailAndPassword(email.toLowerCase(), password);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Optional<EmailAccount> findActiveAndVerificatedAccount(String email) {
-        return emailAccountRepository.findEmailAccountByEmailAndActiveTrueAndVerificatedTrue(email.toLowerCase());
+        return emailAccountRepository.findAccountByEmailAndVerificatedTrue(email.toLowerCase());
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
@@ -236,7 +242,7 @@ public class EmailAuthService implements IEmailAuthService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public Optional<EmailAccount> findActiveAndVerificatedAccount(String email, String password) {
-        return emailAccountRepository.findAccountByEmailAndPassword(email.toLowerCase(), password);
+        return emailAccountRepository.findEmailAccountByEmailAndPassword(email.toLowerCase(), password);
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

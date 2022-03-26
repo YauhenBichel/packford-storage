@@ -16,7 +16,7 @@ public interface IAccountService {
 
     Optional<Account> findActiveAccount(UUID accountId);
 
-    Account createAccount(UUID accountId, String hashedPassWithSalt, RegistrationRequestVO registrationRequestVO);
+    Account createAccount(UUID accountId);
 
     Optional<Account> updateAccount(UUID accountId, AccountRequestVO accountRequestVO);
 

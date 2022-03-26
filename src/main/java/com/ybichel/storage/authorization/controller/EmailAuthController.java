@@ -1,6 +1,7 @@
 package com.ybichel.storage.authorization.controller;
 
 import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.mapper.AuthenticatedAccountMapper;
 import com.ybichel.storage.authorization.mapper.AuthMapper;
 import com.ybichel.storage.authorization.model.AuthenticatedAccount;
@@ -31,7 +32,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @RestController
-@RequestMapping({"/account", "/auth"})
+@RequestMapping({"/auth"})
 public class EmailAuthController {
 
     private final IEmailAuthService emailAuthService;
@@ -98,7 +99,7 @@ public class EmailAuthController {
 
         EmailVerificationStatusResponseVO responseVO = new EmailVerificationStatusResponseVO();
         responseVO.setAccountId(id);
-        responseVO.setVerificated(authenticatedAccount.getAccount().getEmailAccount().getVerificated());
+        responseVO.setVerificated(authenticatedAccount.getVerificated());
         responseVO.setJwtToken(authenticatedAccount.getJwtToken());
 
         return new ResponseEntity<>(responseVO, HttpStatus.OK);
@@ -114,10 +115,13 @@ public class EmailAuthController {
     @PostMapping("/reset-password")
     @CrossOrigin(origins = "*")
     public ResponseEntity<ResetPasswordResponseVO> resetPassword(@Valid @RequestBody ResetPasswordRequestVO requestVO) {
-        final Account updatedAccount = emailAuthService.resetPassword(requestVO);
+        final EmailAccount updatedEmailAccount = emailAuthService.resetPassword(requestVO);
 
         ResetPasswordResponseVO responseVO = new ResetPasswordResponseVO();
-        responseVO.setAccount(updatedAccount);
+        responseVO.setId(updatedEmailAccount.getAccount().getId());
+        responseVO.setActive(updatedEmailAccount.getAccount().getActive());
+        responseVO.setEmail(updatedEmailAccount.getEmail());
+        responseVO.setVerificated(updatedEmailAccount.getVerificated());
 
         return new ResponseEntity<>(responseVO, HttpStatus.OK);
     }

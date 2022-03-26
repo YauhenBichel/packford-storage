@@ -1,11 +1,12 @@
 package com.ybichel.storage.authorization.vo;
 
-import com.ybichel.storage.account.entity.Account;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
+import java.util.UUID;
 
 @Data
 public class ResetPasswordResponseVO {
-    private Account account;
+    private UUID id;
+    private String email;
+    private Boolean verificated;
+    private Boolean active;
 }

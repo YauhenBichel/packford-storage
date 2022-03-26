@@ -2,11 +2,10 @@ package com.ybichel.storage.account.service;
 
 import com.google.api.client.util.Sets;
 import com.ybichel.storage.account.entity.Account;
-import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.account.mapper.AccountMapper;
 import com.ybichel.storage.account.repository.AccountRepository;
 import com.ybichel.storage.account.vo.AccountRequestVO;
-import com.ybichel.storage.authorization.vo.RegistrationRequestVO;
+import com.ybichel.storage.authorization.repository.EmailAccountRepository;
 import com.ybichel.storage.common.exception.AccountNotFoundException;
 import com.ybichel.storage.security.Constants;
 import com.ybichel.storage.security.entity.StorageRole;
@@ -31,13 +30,16 @@ public class AccountService implements IAccountService {
     private static final Logger logger = LogManager.getLogger(AccountService.class);
 
     private final AccountRepository accountRepository;
+    private final EmailAccountRepository emailAccountRepository;
     private final StorageRoleRepository roleRepository;
     private final AccountMapper accountMapper;
 
     public AccountService(AccountRepository accountRepository,
+                          EmailAccountRepository emailAccountRepository,
                           StorageRoleRepository roleRepository,
                           AccountMapper accountMapper) {
         this.accountRepository = accountRepository;
+        this.emailAccountRepository = emailAccountRepository;
         this.roleRepository = roleRepository;
         this.accountMapper = accountMapper;
     }
@@ -59,19 +61,18 @@ public class AccountService implements IAccountService {
 
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Account createAccount(UUID accountId, String hashedPassWithSalt, RegistrationRequestVO registrationRequestVO) {
-        Account account = accountMapper.toAccount(accountId, hashedPassWithSalt, registrationRequestVO);
+    public Account createAccount(UUID accountId) {
+        Account account = new Account();
+        account.setId(accountId);
+        account.setActive(true);
 
         Optional<StorageRole> optRole = roleRepository.findStorageRoleByNameEquals(Constants.AUTHORITY_STORAGE_USER);
-        optRole.ifPresent( role -> {
+        optRole.ifPresent(role -> {
             Set<StorageRole> roles = Sets.newHashSet();
             roles.add(role);
 
             account.setRoles(roles);
         });
-
-        EmailAccount emailAccount = new EmailAccount();
-        emailAccount.setId(UUID.randomUUID());
 
         return accountRepository.save(account);
     }
