@@ -18,3 +18,15 @@ databaseChangeLog:
   - include:
       file: account/21022022-table-email_account-create.yaml
       relativeToChangelogFile: true
+  - include:
+      file: account/21022022-table-permission-create.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/21022022-table-role-create.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/21022022-role-add-roles.yaml
+      relativeToChangelogFile: true
+  - include:
+      file: account/21022022-permission-add-permissions.yaml
+      relativeToChangelogFile: true

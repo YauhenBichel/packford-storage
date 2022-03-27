@@ -16,10 +16,9 @@ public interface EmailAccountRepository extends SpecificationPagingAndSortingRep
     @Query(value = "SELECT * from email_account em_acc " +
             "inner join account acc on em_acc.account_id = acc.id" +
             " where em_acc.email = :email AND " +
-            "crypt(:password, em_acc.password) = em_acc.password AND " +
-            "em_acc.verificated = true",
+            "em_acc.verificated = true AND acc.active = true",
             nativeQuery = true)
-    Optional<EmailAccount> findEmailAccountByEmailAndActiveTrue(String email);
+    Optional<EmailAccount> findEmailAccountByEmailAndActiveTrue(@Param("email") String email);
 
     @Query(value = "SELECT crypt(:password, gen_salt('bf', 8))",
             nativeQuery = true)

@@ -88,7 +88,7 @@ public class EmailAuthService implements IEmailAuthService {
         emailAccount.setPassword(hashedPassWithSalt);
         emailAccount.setEmail(registrationRequestVO.getEmail());
 
-        mailService.confirmRegistration(emailAccount);
+        //mailService.confirmRegistration(emailAccount);
 
         return dbAccount;
     }
