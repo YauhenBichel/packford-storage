@@ -65,9 +65,9 @@ public class EmailAuthController {
     @CrossOrigin(origins = "*")
     public ResponseEntity<RegistrationResponseVO> register(@Valid @RequestBody RegistrationRequestVO request) {
         final UUID accountId = UUID.randomUUID();
-        final Account dbAccount = emailAuthService.register(accountId, request);
+        final EmailAccount dbEmailAccount = emailAuthService.register(accountId, request);
 
-        RegistrationResponseVO responseVO = authMapper.toRegistrationResponseVO(dbAccount);
+        RegistrationResponseVO responseVO = authMapper.toRegistrationResponseVO(dbEmailAccount);
 
         return new ResponseEntity<>(responseVO, HttpStatus.CREATED);
     }
@@ -81,7 +81,7 @@ public class EmailAuthController {
     @GetMapping("/verify-email/{id}")
     @CrossOrigin(origins = "*")
     public ResponseEntity verifyEmail(@PathVariable("id") final UUID accountId) {
-        final Optional<Account> optDbAccount = emailAuthService.verifyEmail(accountId);
+        final Optional<EmailAccount> optDbAccount = emailAuthService.verifyEmail(accountId);
 
         if (optDbAccount.isEmpty()) {
             return new ResponseEntity(null, HttpStatus.NOT_FOUND);

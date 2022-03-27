@@ -65,7 +65,7 @@ public class EmailAuthService implements IEmailAuthService {
     }
 
     @Transactional(propagation = Propagation.REQUIRED, rollbackFor = MailException.class)
-    public Account register(UUID accountId, RegistrationRequestVO registrationRequestVO) {
+    public EmailAccount register(UUID accountId, RegistrationRequestVO registrationRequestVO) {
         final String hashedPassWithSalt = this.generateHash(registrationRequestVO.getPassword());
         Optional<EmailAccount> optDbEmailAccount = this.findActiveAccount(registrationRequestVO.getEmail());
 
@@ -88,18 +88,18 @@ public class EmailAuthService implements IEmailAuthService {
         emailAccount.setPassword(hashedPassWithSalt);
         emailAccount.setEmail(registrationRequestVO.getEmail());
 
-        //mailService.confirmRegistration(emailAccount);
+        emailAccountRepository.save(emailAccount);
 
-        return dbAccount;
+        return emailAccount;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Optional<Account> verifyEmail(UUID accountId) {
+    public Optional<EmailAccount> verifyEmail(UUID accountId) {
         Optional<Account> optDbAccount = accountService.findActiveAccount(accountId);
         Optional<EmailAccount> optEmailAccount = emailAccountRepository.findEmailAccountByAccount_Id(optDbAccount.get().getId());
         optEmailAccount.ifPresent(mailService::confirmRegistration);
 
-        return optDbAccount;
+        return optEmailAccount;
     }
 
     @Transactional(propagation = Propagation.REQUIRED)

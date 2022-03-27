@@ -1,6 +1,6 @@
 package com.ybichel.storage.authorization.mapper;
 
-import com.ybichel.storage.account.entity.Account;
+import com.ybichel.storage.authorization.entity.EmailAccount;
 import com.ybichel.storage.authorization.vo.RegistrationResponseVO;
 import com.ybichel.storage.security.entity.StorageRole;
 import org.springframework.stereotype.Component;
@@ -10,13 +10,15 @@ import java.util.stream.Collectors;
 
 @Component
 public class AuthMapper {
-    public RegistrationResponseVO toRegistrationResponseVO(Account dbAccount) {
+    public RegistrationResponseVO toRegistrationResponseVO(EmailAccount dbEmailAccount) {
         RegistrationResponseVO responseVO = new RegistrationResponseVO();
 
-        responseVO.setId(dbAccount.getId());
-        responseVO.setActive(dbAccount.getActive());
+        responseVO.setId(dbEmailAccount.getId());
+        responseVO.setEmail(dbEmailAccount.getEmail());
+        responseVO.setVerificated(dbEmailAccount.getVerificated());
+        responseVO.setActive(dbEmailAccount.getAccount().getActive());
 
-        Set<String> roles = dbAccount.getRoles().stream()
+        Set<String> roles = dbEmailAccount.getAccount().getRoles().stream()
                 .map(StorageRole::getName)
                 .collect(Collectors.toSet());
 

@@ -14,9 +14,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface IEmailAuthService {
-    Account register(UUID userId, RegistrationRequestVO registrationRequestVO);
+    EmailAccount register(UUID userId, RegistrationRequestVO registrationRequestVO);
 
-    Optional<Account> verifyEmail(UUID accountId);
+    Optional<EmailAccount> verifyEmail(UUID accountId);
 
     AuthenticatedAccount login(LoginRequestVO loginRequestVO);
 
